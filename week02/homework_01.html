@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>week 02 - homework 01</title>
+</head>
+<body>
+    <div>1. 写一个正则表达式 匹配所有 Number 直接量</div>
+</body>
+<script>
+    const reg = /((^(0|[1-9]\d*))\.?\d+([eE][+-]?\d+)?$)|(^\.\d+([eE][+-]?\d+)?$)|((^(0|[1-9]\d*))\.([eE][+-]?\d+)?$)|(^0[bB][01]+$)|(^0[oO][0-7]+$)|(^0[xX][0-9a-fA-F]+$)/
+
+    const cases = [
+        '0.0',
+        '0.1',
+        '1.1',
+        '123.0',
+        '01',
+        '123',
+        '.1',
+        '0.',
+        's.1',
+        '.' ,
+        '123a',
+        '1.1e10',
+        '0.2e-012',
+        '.3E2',
+        '.e3',
+        '0b010',
+        '0B10',
+        '0b2',
+        '0o01237',
+        '0O147',
+        '0O18',
+        '0x138f',
+        '0X3aF4',
+        '0x3g'
+    ];
+
+    cases.forEach(item => {
+        const isMatch = reg.test(item);
+        console.log(`${item} ${isMatch ? "passed" : "failed"} : ${Number(item)}\n`);
+    })
+</script>
+</html>
