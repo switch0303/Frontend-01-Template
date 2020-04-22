@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>week 02 - homework 03</title>
+</head>
+<body>
+    <div>3. 写一个正则表达式，匹配所有的字符串直接量，单引号和双引号</div>
+</body>
+<script>
+    const reg = /((^"([^"\\\n\r]|\\(['"\\bfnrtv\n\r\u2028\u2029]|\r\n)|\\x[0-9a-fA-f]{2}|\\u[0-9a-fA-F]{4}|\\u\{(10[0-9a-fA-F]{4}|0[0-9a-fA-F]{5}|[0-9a-fA-F]{1,4})\}|\\[^0-9ux'"\\bfnrtv\n\r\u2028\u2029])*"$)|(^'([^'\\\n\r]|\\(['"\\bfnrtv\n\r\u2028\u2029]|\r\n)|\\x[0-9a-fA-f]{2}|\\u[0-9a-fA-F]{4}|\\u\{(10[0-9a-fA-F]{4}|0[0-9a-fA-F]{5}|[0-9a-fA-F]{1,4})\}|\\[^0-9ux'"\\bfnrtv\n\r\u2028\u2029])*'$))/
+
+    const cases = [
+        '"abc"',
+        '"\n"',
+        '"\\"',
+        '"\u2028"',
+        '"\u{1111}"',
+        "'abc'",
+        "'\n'",
+        "'\\'",
+        "'\u2028'",
+        "'\u{1111}'",
+    ];
+
+    cases.forEach(item => {
+        const isMatch = reg.test(item);
+        console.log(`${item} ${isMatch ? "passed" : "failed"}`);
+    })
+</script>
+</html>
