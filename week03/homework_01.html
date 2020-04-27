@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. 实现函数convertStringToNumber及convertNumberToString</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function charToNum(char) {
+        if (/[a-f]/.test(char)) {
+            return char.codePointAt(0) - 87;
+        } else if(/[A-F]/.test(char)) {
+            return char.codePointAt(0) - 55;
+        } else {
+            return char.codePointAt(0) - 48;
+        }
+    }
+
+    function convertStringToNumber(string) {
+        if (typeof string !== "string") {
+            throw new Error("invalid argument");
+        }
+        const str = string.trim();
+        // 二进制 八进制 十六进制
+        const regForBinaryOctalHex = /(^0[bB][01]+$)|(^0[oO][0-7]+$)|(^0[xX][0-9a-fA-F]+$)/
+        if (regForBinaryOctalHex.test(str)) {
+
+            // 判断是哪种进制
+            const secondChar = str.slice(1, 2).toLowerCase();
+            const radix = secondChar === "b"
+                ? 2
+                : secondChar === "o"
+                ? 8
+                : 16
+
+            const chars = str.slice(2).split("");
+
+            let number = 0;
+            for (let  i = 0; i < chars.length; i++) {
+                number *= radix;
+                number += charToNum(chars[i]);
+            }
+            return number;
+
+        } else {
+            const regForDecimal = /^[+-]*\d*\.?\d+([eE][+-]?\d+)?$/;
+            if (regForDecimal.test(str)) {
+                // 取符号位
+                const firstChar = str.slice(0, 1);
+                const sign = firstChar === "-" ? "-" : "+";
+
+                const chars = ((firstChar === "-" || firstChar === "+")
+                                    ? str.slice(1)
+                                    : str).split("");
+
+                let number = 0;
+                let i = 0;
+                while(i < chars.length && chars[i] !== "." && chars[i] !== "e" && chars[i] !== "E") {
+                    number *= 10;
+                    number += charToNum(chars[i]);
+                    i++;
+                }
+
+                // 处理小数点
+                if (chars[i] === ".") i++;
+
+                // 处理小数部分
+                let fraction = 0;
+                let fractionCount = 0;
+                while(i < chars.length && chars[i] !== "e" && chars[i] !== "E") {
+                    fraction *= 10;
+                    fraction += charToNum(chars[i]);
+                    i++;
+                    fractionCount++;
+                }
+
+                number = number + (fractionCount > 0 ? fraction/(10**fractionCount): 0);
+
+                // 处理指数部分
+                if (chars[i] === "e" || chars[i] === "E") i++;
+                let exponentSign = "+";
+                if (chars[i] === "+" || chars[i] === "-") {
+                    exponentSign = chars[i];
+                    i++;
+                }
+
+                let exponent = 0;
+                while(i < chars.length) {
+                    exponent *= 10;
+                    exponent += charToNum(chars[i]);
+                    i++;
+                }
+                if (exponentSign === "+") {
+                    number = number * (10**exponent);
+                } else {
+                    number = number / (10**exponent);
+                }
+                
+                return sign === "-"
+                        ? -number
+                        : number;
+
+            } else if (str === "Infinity" || str === "+Infinity") {
+                return Number.POSITIVE_INFINITY;
+            } else if (str === "-Infinity") {
+                return Number.NEGATIVE_INFINITY;
+            } else if (str === "") {
+                return 0;
+            }
+            return NaN;
+        }
+    }
+
+    const cases = [
+        "000132",
+        " 0123",
+        " 123.123 ",
+        "321",
+        "0b110",
+        "0b210",
+        "0B1110",
+        "0O17",
+        "0O21",
+        "0O81",
+        "0xa00",
+        "0Xf01",
+        "0x3g",
+        " ",
+        "Infinity",
+        "+Infinity",
+        "-Infinity",
+        "-123.321",
+        "-.345",
+        "10e3",
+        "10E100",
+        "10e-2",
+    ];
+    cases.forEach(item => {
+        const leftRst = convertStringToNumber(item);
+        const rightRst = Number(item);
+
+        let isEqual = leftRst === rightRst;
+        if (Number.isNaN(leftRst) && Number.isNaN(rightRst)) {
+            isEqual = true;
+        }
+        console.log(`${item} ${isEqual ? "passed" : "failed"} : ${convertStringToNumber(item)}\n`);
+    })
+</script>
+</html>
