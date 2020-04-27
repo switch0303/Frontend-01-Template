@@ -137,6 +137,8 @@
         "10e3",
         "10E100",
         "10e-2",
+        "+0",
+        "-0",
     ];
     cases.forEach(item => {
         const leftRst = convertStringToNumber(item);
@@ -146,7 +148,7 @@
         if (Number.isNaN(leftRst) && Number.isNaN(rightRst)) {
             isEqual = true;
         }
-        console.log(`${item} ${isEqual ? "passed" : "failed"} : ${convertStringToNumber(item)}\n`);
+        console.log(`${item} ${isEqual ? "passed" : "failed"}`, convertStringToNumber(item), Number(item));
     })
 </script>
 </html>
