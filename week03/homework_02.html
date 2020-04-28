@@ -20,12 +20,10 @@
 
     function fractionToString(fraction) {
         let string = "";
-        let number = 0;
         let integer = 0;
-        while(fraction > 0) {
-            number = fraction * 10;
-            integer = Math.floor(number);
-            fraction = number - integer;
+        while(!Number.isInteger(fraction)) {
+            fraction = fraction * 10;
+            integer = Math.floor(fraction)%10;
             string += integer;
         }
         return string;
