@@ -29,7 +29,19 @@
         return string;
     }
 
+    function getFraction(decimal, integer) {
+        let fraction = 0;
+        let divisor = 1;
+        while(!Number.isInteger(decimal)) {
+            decimal *= 10;
+            integer *= 10;
+            divisor *= 10;
+        }
+        return (decimal - integer) / divisor;
+    }
+
     function convertNumberToString(number) {
+        // 特殊值处理
         if (typeof number !== "number") {
             throw new Error("invalid argument");
         }
@@ -46,16 +58,20 @@
             return "-Infinity";
         }
 
+        // 获取符号
         const sign = number / Math.abs(number) === -1 ? "-" : "";
+        // 转成10进制
         const decimal = Math.abs(Number(number));
-
+        // 获取整数部分数值
         const integer = Math.floor(decimal);
-        const fraction = decimal - integer;
+        // 获取小数部分数值
+        const fraction = getFraction(decimal, integer);
         
         const strOfInteger = integerToString(integer);
         const strOfFraction = fractionToString(fraction);
 
         let string = sign + strOfInteger;
+        // 加小数点和小数部分
         if (strOfFraction.length > 0) {
             string += ("." + strOfFraction);
         }
