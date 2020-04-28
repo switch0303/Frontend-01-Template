@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2. 实现函数convertNumberToString</title>
+</head>
+<body>
+    
+</body>
+<script>
+    function integerToString(integer) {
+        let string = "";
+        while(integer > 0) {
+            string = integer % 10 + string;
+            integer = Math.floor(integer / 10);
+        }
+        return string === "" ? "0" : string;
+    }
+
+    function fractionToString(fraction) {
+        let string = "";
+        let number = 0;
+        let integer = 0;
+        while(fraction > 0) {
+            number = fraction * 10;
+            integer = Math.floor(number);
+            fraction = number - integer;
+            string += integer;
+        }
+        return string;
+    }
+
+    function convertNumberToString(number) {
+        if (typeof number !== "number") {
+            throw new Error("invalid argument");
+        }
+        if (number === 0) {
+            return "0";
+        }
+        if (Number.isNaN(number)) {
+            return "NaN";
+        }
+        if (number === Number.POSITIVE_INFINITY) {
+            return "Infinity";
+        }
+        if (number === Number.NEGATIVE_INFINITY) {
+            return "-Infinity";
+        }
+
+        const sign = number / Math.abs(number) === -1 ? "-" : "";
+        const decimal = Math.abs(Number(number));
+
+        const integer = Math.floor(decimal);
+        const fraction = decimal - integer;
+        
+        const strOfInteger = integerToString(integer);
+        const strOfFraction = fractionToString(fraction);
+
+        let string = sign + strOfInteger;
+        if (strOfFraction.length > 0) {
+            string += ("." + strOfFraction);
+        }
+
+        return string;
+    }
+
+    const cases = [
+        0,
+        123,
+        -0.0,
+        0b101,
+        0x2af,
+        0o671,
+        Number.NEGATIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+        NaN,
+        221.1089,
+        2e10,
+        -3.3e12,
+        -.1213,
+        .0003215,
+    ];
+    cases.forEach(item => {
+        const leftRst = convertNumberToString(item);
+        const rightRst = String(item);
+
+        let isEqual = leftRst === rightRst;
+
+        console.log(`${item} ${isEqual ? "passed" : "failed"}`, convertNumberToString(item), String(item));
+    })
+</script>
+</html>
