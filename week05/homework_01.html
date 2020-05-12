@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.用 G6 antv 可视化 Realm 中的所有对象（选做）</title>
+</head>
+<body>
+</body>
+<script>
+    var set = new Set();
+    var globalProperties = [
+        'eval',
+        'isFinite',
+        'isNaN',
+        'parseFloat',
+        'parseInt',
+        'decodeURI',
+        'decodeURIComponent',
+        'encodeURI',
+        'encodeURIComponent',
+        'Array',
+        'ArrayBuffer',
+        'Boolean',
+        'DataView',
+        'Date',
+        'Error',
+        'EvalError',
+        'Float32Array',
+        'Float64Array',
+        'Function',
+        'Int8Array',
+        'Int16Array',
+        'Int32Array',
+        'Map',
+        'Number',
+        'Object',
+        'Promise',
+        'Proxy',
+        'RangeError',
+        'ReferenceError',
+        'RegExp',
+        'Set',
+        'SharedArrayBuffer',
+        'String',
+        'Symbol',
+        'SyntaxError',
+        'TypeError',
+        'Uint8Array',
+        'Uint8ClampedArray',
+        'Uint16Array',
+        'Uint32Array',
+        'URIError',
+        'WeakMap',
+        'WeakSet',
+        'Atomics',
+        'JSON',
+        'Math',
+        'Reflect'
+    ];
+    var queue = [];
+    globalProperties.forEach(p => queue.push({
+        path: [p],
+        object: this[p],
+    }));
+    // console.log(queue)
+    queue.forEach(item => set.add(item.object));
+
+    for(var i = 0; i < queue.length; i++) {
+        var o = queue[i].object;
+        for(var p of Object.getOwnPropertyNames(o)) {
+            var d = Object.getOwnPropertyDescriptor(o, p)
+            if( (d.value !== null && typeof d.value === "object") || (typeof d.value === "function"))
+                if(!set.has(d.value))
+                    set.add(d.value), queue.push({path: [...queue[i].path, p], object: d.value});
+            if( d.get )
+                if(!set.has(d.get))
+                    set.add(d.get), queue.push({path: [...queue[i].path, p], object: d.get});
+            if( d.set )
+                if(!set.has(d.set))
+                    set.add(d.set), queue.push({path: [...queue[i].path, p], object: d.set});
+        }
+    }
+</script>
+</html>
