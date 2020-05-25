@@ -122,7 +122,7 @@ function layout(element) {
     const flexLine = [];
     const flexLines = [flexLine];
 
-    const mainSpace = elementStyle[mainSize];
+    let mainSpace = elementStyle[mainSize];
     let crossSpace = 0;
 
     for (let i = 0; i < items.length; i++) {
