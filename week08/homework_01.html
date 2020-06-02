@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编写一个 match 函数</title>
+</head>
+<body>
+    <div>
+        <input type="text" id="id" class="class class2 class3" />
+    </div>
+    <input type="text" id="id2" class="class" />
+    <script>
+        function match(selector, element) {
+            if (typeof selector !== "string" || selector === "")
+                return false;
+            
+            // 连接符：1. 后代 空格   2. 子代  >  3. 相邻 +  4. 兄弟 ~
+            const combinatorReg = /\s*[>+~\s]\s*/g;
+            
+            // 取出所有的 连接符
+            const combinators = selector.match(combinatorReg);
+            // 加入"="，用于辅助判断
+            combinators.push("=");
+
+            // 分割出所有的 复合选择器
+            const compoundSelectors = selector.split(combinatorReg);
+
+            let isMatch = true;
+            let currentCompoundSelector = "";
+            let currentCombinator = "";
+            let currentElement = element;
+
+            for(let i = compoundSelectors.length - 1; i >= 0; i--) {
+                currentCompoundSelector = compoundSelectors[i];
+                currentCombinator = combinators[i];
+                const matchedElement = getMatchedElement(currentCompoundSelector, currentElement, currentCombinator);
+                if (matchedElement == null) {
+                    isMatch = false;
+                    break;
+                } else {
+                    currentElement = matchedElement;
+                }
+            }
+
+            return isMatch;
+        }
+
+        function getMatchedElement(compoundSelector, element, combinator) {
+            let isMatch = false;
+            let currentElement = element;
+
+            if (combinator.indexOf("=") > -1) {
+                isMatch = matchCompoundSelector(compoundSelector, currentElement);
+            } else if (combinator.indexOf(">") > -1) {
+                currentElement = element.parentNode;
+                isMatch = matchCompoundSelector(compoundSelector, currentElement);
+            } else if (combinator.indexOf("+") > -1) {
+                currentElement = element.previousElementSibling;
+                isMatch = matchCompoundSelector(compoundSelector, currentElement);
+            } else if (combinator.indexOf("~") > -1) {
+                currentElement = element.previousElementSibling;
+                while(currentElement != null) {
+                    const result = matchCompoundSelector(compoundSelector, currentElement);
+                    if (result) {
+                        isMatch = true;
+                        break;
+                    } else {
+                        currentElement = currentElement.previousElementSibling;
+                    }
+                }
+            } else {
+                currentElement = element.parentNode;
+                while(currentElement !== document) {
+                    const result = matchCompoundSelector(compoundSelector, currentElement);
+                    if (result) {
+                        isMatch = true;
+                        break;
+                    } else {
+                        currentElement = currentElement.parentNode;
+                    }
+                }
+            }
+
+            if (isMatch) {
+                return currentElement;
+            } else {
+                return null;
+            }
+        }
+
+        function matchCompoundSelector(compoundSelector, element) {
+            if (!compoundSelector || !element) {
+                return false;
+            }
+
+            // 取出所有的 简单选择器
+            const simpleSelectors = compoundSelector.match(/([\w-]+)|(\.[\w-]+)|(#[\w-]+)|(\[[\w-\'\"=~\|\^\$\*]+\])/g);
+            return simpleSelectors.every(item => matchSimpleSelector(item, element));
+        }
+
+        function matchSimpleSelector(selector, element) {
+            if (!selector || !element)
+                return false;
+
+            if (selector === "*") {
+                return true;
+            }
+            if (selector.charAt(0) === "#") {
+                const value = element.id;
+                if (value === selector.replace("#", ""))
+                    return true;
+            } else if (selector.charAt(0) === ".") {
+                const value = element.className;
+                if (value.split(/\s+/).includes(selector.replace(".", "")))
+                    return true;
+            } else if (selector.charAt(0) === "[") {
+                const arr = selector.replace(/[\[\]]/g, "").split("=");
+                if (arr.length === 1) {
+                    return element.getAttribute(arr[0]) != null;
+                } else {
+                    const lastCharOfKey = arr[0][arr[0].length - 1];
+                    if (["~", "|", "^", "$", "*"].includes(lastCharOfKey)) {
+                        const key = arr[0].slice(0, -1);
+                        const value = arr[1].replace(/[\'\"]/g, "");
+                        const attrValue = element.getAttribute(key);
+                        return attrValue != null && compareValue(attrValue, value, lastCharOfKey);
+                    } else {
+                        const key = arr[0];
+                        const value = arr[1].replace(/[\'\"]/g, "");
+                        return element.attributes.getAttribute(key) = value;
+                    }
+                }
+            } else {
+                if (element.tagName.toLowerCase() === selector.toLowerCase()) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function compareValue(attrValue, value, symbol) {
+            if (symbol === "*") {
+                return attrValue.includes(value);
+            } else if (symbol === "^") {
+                return attrValue.startsWith(value);
+            } else if (symbol === "$") {
+                return attrValue.endsWith(value);
+            } else if (symbol === "|") {
+                return attrValue.startsWith(value);
+            } else if (symbol === "~") {
+                const arr = attrValue.split(/\s+/);
+                return arr.includes(value);
+            }
+        }
+
+
+        console.log(match("div #id.class", document.getElementById("id")));
+
+    </script>
+</body>
+</html>
