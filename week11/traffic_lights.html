@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红绿灯</title>
+    <style>
+        .container {
+            width: 400px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .light {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="light1" class="light"></div>
+        <div id="light2" class="light"></div>
+        <div id="light3" class="light"></div>
+    </div>
+    <script>
+        function sleep(time) {
+            return new Promise(resolve => setTimeout(resolve, time));
+        }
+        
+        async function main() {
+            const light1 = document.getElementById("light1");
+            const light2 = document.getElementById("light2");
+            const light3 = document.getElementById("light3");
+            while(true) {
+                light1.style.backgroundColor = "green";
+                await sleep(10000);
+                light1.style.backgroundColor = "grey";
+
+                light2.style.backgroundColor = "yellow";
+                await sleep(2000);
+                light2.style.backgroundColor = "grey";
+
+                light3.style.backgroundColor = "red";
+                await sleep(5000);
+                light3.style.backgroundColor = "grey";
+            }
+        }
+
+        main();
+    </script>
+</body>
+</html>
