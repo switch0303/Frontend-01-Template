@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正则exec</title>
+    <style>
+        .keywords {
+            color: orange;
+        }
+        .identifier {
+            color: purple;
+        }
+        .punctuator {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <pre id="container">
+
+    </pre>
+    <script>
+        const source = `
+        function sleep(time) {
+            return new Promise(resolve => setTimeout(resolve, time));
+        }
+        `;
+
+        const regexp = /(function|return|new)|([\s]+)|([a-zA-Z][a-zA-Z0-9]*)|(\(|\)|\{|\}|,|;|=>)/g;
+        const dictionary = ["keywords", "whitespace", "identifier", "punctuator"];
+
+        const container = document.getElementById("container");
+
+        let token = null;
+        do {
+            token = regexp.exec(source);
+            if (!token)
+                break;
+            console.log(token);
+
+            const span = document.createElement("span");
+            span.textContent = token[0];
+
+            for (let i = 1; i < 5; i++) {
+                if(token[i])
+                    span.classList.add(dictionary[i - 1]);
+            }
+            
+            container.appendChild(span);
+        } while(token);
+    </script>
+</body>
+</html>
