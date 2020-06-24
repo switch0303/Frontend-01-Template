@@ -67,6 +67,7 @@
         }
 
         async function path(map, start, end) {
+            map = map.slice();
             const queue = [start];
 
             async function insert(x, y) {

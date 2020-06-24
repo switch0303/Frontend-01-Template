@@ -63,6 +63,7 @@
         document.addEventListener('contextmenu', e => e.preventDefault())
 
         function path(map, start, end) {
+            map = map.slice();
             const queue = [start];
 
             function insert(x, y) {
