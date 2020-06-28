@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解析一个四则运算的表达式</title>
+</head>
+<body>
+    <script>
+        const regexp = /([0-9\.]+)|([ ]+)|([\r\n]+)|(\+)|(\-)|(\*)|(\/)/g;
+
+        const dictionary = ["Number", "Whitespace", "LineTerminator", "+", "-", "*", "/"];
+
+        function tokenize(source) {
+            let result = null;
+            let lastIndex = 0;
+
+            do {
+                lastIndex = regexp.lastIndex;
+                result = regexp.exec(source);
+
+                if (!result) {
+                    const str = source.slice(lastIndex);
+                    if (str)
+                        throw new Error("Unexpected token \"" +
+                            source.slice(lastIndex) + "\"!");
+                    else
+                        break;
+                }
+                    
+                if (regexp.lastIndex - lastIndex > result[0].length)
+                    throw new Error("Unexpected token \"" +
+                        source.slice(lastIndex, regexp.lastIndex - result[0].length) + "\"!");
+
+                for (let i = 0; i < dictionary.length; i++) {
+                    if (result[i + 1])
+                        console.log(dictionary[i]);
+                }
+                console.log(result);
+            } while(result)
+        }
+
+        tokenize("1024 + 10 * 25");
+    </script>
+</body>
+</html>
