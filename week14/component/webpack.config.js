@@ -8,7 +8,12 @@ module.exports = {
                     loader: "babel-loader",
                     options: {
                         presets: ["@babel/preset-env"],
-                        plugins: [["@babel/plugin-transform-react-jsx", {pragma: "create"}]]
+                        plugins: [
+                            [
+                                "@babel/plugin-transform-react-jsx",
+                                {pragma: "create"} // string, defaults to React.createElement. Replace the function used when compiling JSX expressions.
+                            ]
+                        ]
                     }
                 }
             }
