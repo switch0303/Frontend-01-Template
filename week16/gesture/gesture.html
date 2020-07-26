@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>gesture</title>
+		<style>
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+			}
+			#mydiv {
+				width: 100px;
+				height: 100px;
+				background-color: aqua;
+				transform: translate(0px, 0px);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="mydiv"></div>
+		<script src="./gesture.js"></script>
+		<script>
+			window.addEventListener("contextmenu", (event) => event.preventDefault());
+			document.addEventListener("selectstart", (event) =>
+				event.preventDefault()
+			);
+			document.addEventListener(
+				"touchmove",
+				(event) => event.preventDefault(),
+				{ passive: false }
+			);
+
+			let mydiv = document.getElementById("mydiv");
+			enableGesture(mydiv);
+			let x = 0;
+			let y = 0;
+
+			mydiv.addEventListener("tap", (event) => {
+				console.log("tap");
+			});
+			mydiv.addEventListener("pan", (event) => {
+				const { startX, startY, clientX, clientY } = event.detail;
+				mydiv.style.transform = `translate(${x + clientX - startX}px, ${
+					y + clientY - startY
+				}px)`;
+			});
+			mydiv.addEventListener("panend", (event) => {
+				const { startX, startY, clientX, clientY } = event.detail;
+				x = x + clientX - startX;
+				y = y + clientY - startY;
+			});
+		</script>
+	</body>
+</html>
