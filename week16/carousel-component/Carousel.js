@@ -68,8 +68,12 @@ export class Carousel {
 				let currentElement = children[currentPosition];
 				let nextElement = children[nextPosition];
 
-				const { clientX, startX } = event.detail;
+				const { clientX, startX, isFlick, speed } = event.detail;
 				const dx = clientX - startX;
+				// console.log("dx", dx);
+				// console.log("offset", offset);
+				// console.log("isFlick", isFlick);
+				// console.log("speed", speed);
 
 				let lastTransformValue = -500 - 500 * lastPosition + offset + dx;
 				let currentTransformValue = -500 * currentPosition + offset + dx;
@@ -77,10 +81,14 @@ export class Carousel {
 
 				let direction = 0;
 
-				if (dx + offset > 250) {
-					direction = 1;
-				} else if (dx + offset < -250) {
-					direction = -1;
+				if (isFlick) {
+					direction = dx > 0 ? 1 : -1;
+				} else {
+					if (dx + offset > 250) {
+						direction = 1;
+					} else if (dx + offset < -250) {
+						direction = -1;
+					}
 				}
 
 				timeline.reset();
