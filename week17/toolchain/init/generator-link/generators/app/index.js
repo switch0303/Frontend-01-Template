@@ -10,11 +10,21 @@ module.exports = class extends Generator {
 		this.option("babel"); // This method adds support for a `--babel` flag
 	}
 
-	method1() {
-		this.log("method 1 just ran");
+	writing() {
+		const pkgJson = {
+			devDependencies: {
+				eslint: "^3.15.0",
+			},
+			dependencies: {
+				react: "^16.2.0",
+			},
+		};
+
+		// Extend or create package.json file in destination path
+		this.fs.extendJSON(this.destinationPath("package.json"), pkgJson);
 	}
 
-	method2() {
-		this.log("method 2 just ran");
+	install() {
+		this.npmInstall();
 	}
 };
