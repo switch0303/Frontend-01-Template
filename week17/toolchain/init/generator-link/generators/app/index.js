@@ -11,20 +11,10 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-		const pkgJson = {
-			devDependencies: {
-				eslint: "^3.15.0",
-			},
-			dependencies: {
-				react: "^16.2.0",
-			},
-		};
-
-		// Extend or create package.json file in destination path
-		this.fs.extendJSON(this.destinationPath("package.json"), pkgJson);
-	}
-
-	install() {
-		this.npmInstall();
+		this.fs.copyTpl(
+			this.templatePath("index.html"),
+			this.destinationPath("public/index.html"),
+			{ title: "Templating with Yeoman" }
+		);
 	}
 };
