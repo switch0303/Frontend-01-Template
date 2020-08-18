@@ -28,7 +28,7 @@ fs.stat(filename, (error, stat) => {
 		// });
 	});
 
-	const readStream = fs.createReadStream("./cat.jpg");
+	const readStream = fs.createReadStream(filename);
 	readStream.pipe(req);
 	req.on("error", (e) => {
 		console.error(`problem with request: ${e.message}`);
