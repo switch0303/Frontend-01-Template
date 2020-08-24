@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "启动程序",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/week19/publish/publish-server/bin/www"
+			"program": "${workspaceFolder}/week21/publish/publish-server-vanilla/index.js"
 		}
 	]
 }
